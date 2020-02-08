@@ -8,7 +8,6 @@ public class Printer {
 	private int CC;
 	private int M;
 	final int ORDMAX = 30;
-	//private int P[];
 	private int matriz[][];
 	private int rporpagina;
 	private int totalpaginas = 0;
@@ -243,5 +242,7 @@ public class Printer {
 	public int getCantRegistrosPorPagina(){
 		return this.rporpagina;
 	}
-	
+	public int[][] getMatrizGenerada(){
+		return this.matriz;
+	}
 }
