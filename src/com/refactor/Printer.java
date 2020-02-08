@@ -8,6 +8,10 @@ public class Printer {
 	private int CC;
 	private int M;
 	final int ORDMAX = 30;
+	//private int P[];
+	private int matriz[][];
+	private int rporpagina;
+	private int totalpaginas = 0;
 	
 	public Printer() {
 		this.PAGENUMBER = 1;
@@ -24,6 +28,8 @@ public class Printer {
 		this.RR = filas;
 		this.CC = columnas;
 		this.M = maximo;
+		this.rporpagina = 0;
+		this.totalpaginas = 0;
 	}
 	public int getPageNumber() {
 		return this.PAGENUMBER;
@@ -113,4 +119,129 @@ public class Printer {
 	public void setMaximodeNumeros(int m) {
 		this.M = m;
 	}
+	public void generarMatrizPrimo() {
+		this.rporpagina = this.RR * this.CC;
+		this.totalpaginas = (int)Math.ceil(this.M / this.rporpagina);
+		int nrows = totalpaginas*this.RR;
+		this.matriz = new int[nrows][this.CC];
+		int i=-1;
+		int j=0;
+		int numero = 2;
+		boolean buscarnumeros = true;
+		int primosencontrados = 0;
+		int pagina = 1;
+		while(buscarnumeros) {
+			if(this.isPrimo(numero)) {
+				i=this.getFilaMatriz(i, this.RR, pagina-1);
+				this.matriz[i][j] = numero;
+				primosencontrados++;
+				if(i==(this.RR*pagina)-1) {
+					j++;
+				}
+				if(j==this.CC) {
+					j=0;
+					pagina++;
+				}
+				if(primosencontrados==this.M) {
+					buscarnumeros=false;
+				}
+			}
+			numero++;
+		}
+	}
+	private boolean isPrimo(int numero) {
+        boolean flag = false;
+        for(int i = 2; i <= numero/2; ++i){
+            if(numero % i == 0){
+                flag = true;
+                break;
+            }
+        }
+        if (!flag) {
+        	return true;
+        }else {
+        	return false;
+        }
+	}
+	public void imprimirMatrizCompleta() {
+		boolean imprimir = true;
+		int i=0,j=0,cuenta=0;
+		int pagina = 1;
+		int total = 1;
+		System.out.println("========================PAGINA Nro: "+pagina+"=========================================");
+		while(imprimir) {
+			System.out.printf("%10d", this.matriz[i][j]);
+			j++;
+			if(j==this.CC) {
+				i++;
+				j=0;
+				System.out.println("");
+				
+			}
+			if(cuenta==this.rporpagina-1 && total<this.M) {
+				cuenta=0;
+				pagina++;
+				System.out.println("");
+				System.out.println("\f");
+				System.out.println("========================PAGINA Nro: "+pagina+"=========================================");
+				System.out.println("");
+			}else {
+				cuenta++;
+			}
+			total++;
+			if(total>this.M) {
+				imprimir=false;
+				System.out.println("");
+				System.out.println("\f");
+			}
+		}
+	}
+	private int getFilaMatriz(int f,int maxrow,int pagina) {
+		if(f==( maxrow*(pagina+1)-1)) {
+			f=(maxrow*pagina)-1;
+		}
+		f++;
+		return f;
+	}
+	public void imprimirxPagina(int pagina) {
+		if(pagina>this.totalpaginas) {
+			System.out.println("La matriz procesada no tiene tantas paginas");
+		}else {
+			boolean imprimir = true;
+			int i=(pagina-1)*this.RR,j=0,cuenta=0;
+			int total = 1;
+			System.out.println("========================PAGINA Nro: "+pagina+"=========================================");
+			while(imprimir) {
+				System.out.printf("%10d", this.matriz[i][j]);
+				j++;
+				if(j==this.CC) {
+					i++;
+					j=0;
+					System.out.println("");
+					
+				}
+				if(cuenta==this.rporpagina-1 && total<this.M) {
+					cuenta=0;
+					pagina++;
+					imprimir=false;
+				}else {
+					cuenta++;
+				}
+				total++;
+				if(total>this.M) {
+					imprimir=false;
+					System.out.println("");
+					System.out.println("\f");
+				}
+			}
+		}
+		
+	}
+	public int getTotalPaginas(){
+		return this.totalpaginas;
+	}
+	public int getCantRegistrosPorPagina(){
+		return this.rporpagina;
+	}
+	
 }
